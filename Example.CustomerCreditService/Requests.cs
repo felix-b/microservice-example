@@ -2,7 +2,7 @@
 
     public class IncrementCreditsHttpBody
     {
-        public decimal Amount { get; set; }
+        public double Amount { get; set; }
     }
 
     public class GetCreditsHttpBody
