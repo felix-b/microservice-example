@@ -14,7 +14,11 @@ app.MapPost("/api.credits/customer/increment/{customerId}", async (ICustomerServ
 
 app.MapGet("/api.credits/customer/credits/{customerId}", async (ICustomerService service, int customerId) => {
     var response = await service.GetCustomerCredits(new GetCustomerCreditsRequest() {CustomerId=customerId });
-    return response;
+    if (response.ClientNotFound)
+    {
+        return Results.NotFound();
+    }
+    return Results.Json(response);
 });
 
 

@@ -25,4 +25,5 @@ public class GetCustomerCreditsRequest
 public class GetCustomerCreditsResponse
 {
     public double Credits { get; set; }
+    public bool ClientNotFound {  get; set; }
 }
