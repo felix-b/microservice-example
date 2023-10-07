@@ -1,16 +1,19 @@
 ﻿using System;
+using System.Reflection.Metadata.Ecma335;
+using System.Runtime.InteropServices;
 
 namespace CustomerService.BusinessLogic;
 
 public class CustomerService : ICustomerService
 {
-    public Task<GetCustomerCreditsResponse> GetCustomerCredits(GetCustomerCreditsRequest request)
+    public async Task<GetCustomerCreditsResponse> GetCustomerCredits(GetCustomerCreditsRequest request)
     {
-        throw new NotImplementedException();
+       await Task.Delay(100);
+        return new GetCustomerCreditsResponse() { Credits = 123.45 };
     }
 
-    public Task<IncrementCustomerCreditsResponse> IncrementCustomerCredits(IncrementCustomerCreditsRequest request)
+    public async Task<IncrementCustomerCreditsResponse> IncrementCustomerCredits(IncrementCustomerCreditsRequest request)
     {
-        throw new NotImplementedException();
+        return new IncrementCustomerCreditsResponse();
     }
 }
