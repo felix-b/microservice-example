@@ -9,4 +9,9 @@ app.MapPost("/api.credits/customer/increment/{customerId}", (ICustomerService se
     Message=$"increment amount of customer{customerId} by {body.Amount}"
 } );
 
+app.MapGet("/api.credits/customer/credits/{customerId}", async (ICustomerService service, int customerId) => new {
+    Amount = await service.GetCustomerCredits(new GetCustomerCreditsRequest() {CustomerId=customerId }) 
+});
+
+
 app.Run("http://localhost:3300");
