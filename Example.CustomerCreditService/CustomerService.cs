@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CSharpTest.Net.Synchronization;
+using System;
 using System.Collections.Concurrent;
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.InteropServices;
@@ -12,22 +13,11 @@ public class CustomerService : ICustomerService
 
     public async Task<GetCustomerCreditsResponse> GetCustomerCredits(GetCustomerCreditsRequest request)
     {
-        if (!Monitor.TryEnter(_sync, 1000))
-        {
-            throw new SynchronizationLockException("Cannot lock!");
-        }
-
         bool clientNotFound;
         double customerCredit = 0;
-
-        try
+        using (new SafeLock(_sync, "_sync", 10000))
         {
-            clientNotFound = !_customerCredits.TryGetValue(request.CustomerId,out customerCredit);
-            
-        }
-        finally
-        {
-            Monitor.Exit(_sync);
+            clientNotFound = !_customerCredits.TryGetValue(request.CustomerId, out customerCredit);
         }
 
         await Task.Delay(100);
@@ -37,27 +27,18 @@ public class CustomerService : ICustomerService
 
     public async Task<IncrementCustomerCreditsResponse> IncrementCustomerCredits(IncrementCustomerCreditsRequest request)
     {
-        if (!Monitor.TryEnter(_sync, 1000))
+        using (new SafeLock(_sync, "_sync", 10000))
         {
-            throw new SynchronizationLockException("Cannot lock!");
-        }
-
-        try
-        {
-            if (!_customerCredits.TryGetValue(request.CustomerId, out var customerCredit))
+            if (!_customerCredits.ContainsKey(request.CustomerId))
             {
                 _customerCredits.Add(request.CustomerId, request.Credits);
             }
             else
             {
-                _customerCredits[request.CustomerId] += customerCredit;
+                _customerCredits[request.CustomerId] += request.Credits;
             }
         }
-        finally
-        {
-            Monitor.Exit(_sync);
-        }
-
+      
         return new IncrementCustomerCreditsResponse();
     }
 }
