@@ -1,10 +1,9 @@
-﻿using System;
+﻿namespace Example.CustomerCreditService.BusinessLogic;
 
-namespace CustomerService.BusinessLogic;
 public interface ICustomerService
 {
-    Task<GetCustomerCreditsResponse> GetCustomerCredits(GetCustomerCreditsRequest request);
-    Task<IncrementCustomerCreditsResponse> IncrementCustomerCredits(IncrementCustomerCreditsRequest request);
+    Task<GetCustomerCreditsResponse> GetCustomerCredits(GetCustomerCreditsRequest request, CancellationToken cancellation);
+    Task<IncrementCustomerCreditsResponse> IncrementCustomerCredits(IncrementCustomerCreditsRequest request, CancellationToken cancellation);
 }
 
 public class IncrementCustomerCreditsRequest
