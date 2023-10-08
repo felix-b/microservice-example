@@ -1,5 +1,4 @@
-﻿using CSharpTest.Net.Synchronization;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.InteropServices;
