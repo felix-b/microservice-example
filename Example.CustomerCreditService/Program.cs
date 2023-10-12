@@ -1,6 +1,9 @@
+using Example.CustomerCreditService;
 using Example.CustomerCreditService.BusinessLogic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging.Console;
+
+Console.WriteLine($"Processor count {Environment.ProcessorCount}");
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,21 +59,29 @@ void RegisterAllServices()
             options.TimestampFormat = "yyyy-MM-dd HH:mm:ss ";
             options.ColorBehavior = LoggerColorBehavior.Disabled;
         })
-    );    
-
+    );
+    Console.WriteLine("Processor count :" + Environment.ProcessorCount.ToString());
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 
     builder.Services.AddTransient<Example.CustomerCreditService.BusinessLogic.CustomerService>();
-    builder.Services.AddSingleton<CustomerServiceQueue>(serviceProvider => 
-        new CustomerServiceQueue(
+    builder.Services.AddTransient<CustomerServiceQueue>(serviceProvider => {
+        Console.WriteLine("*** creating instance of CustomerServiceQueue ***");
+        return new CustomerServiceQueue(
             innerService: serviceProvider.GetRequiredService<Example.CustomerCreditService.BusinessLogic.CustomerService>(),
             logger: serviceProvider.GetRequiredService<ILogger<CustomerServiceQueue>>()
-        )
-    );
-
-    builder.Services.AddSingleton<ICustomerService>(serviceProvider => serviceProvider.GetRequiredService<CustomerServiceQueue>());
-    builder.Services.AddHostedService(serviceProvider => serviceProvider.GetRequiredService<CustomerServiceQueue>());
+        );
+    });
+    
+    builder.Services.AddSingleton<MultiPartitionCustomerService>(serviceProvider =>
+       new MultiPartitionCustomerService(
+           numberOfQueues: Environment.ProcessorCount,
+           createBackend: index => serviceProvider.GetRequiredService<CustomerServiceQueue>(),
+           logger: serviceProvider.GetRequiredService<ILogger<MultiPartitionCustomerService>>()
+       )
+   );
+    builder.Services.AddSingleton<ICustomerService>(serviceProvider => serviceProvider.GetRequiredService<MultiPartitionCustomerService>());
+    builder.Services.AddHostedService(serviceProvider => serviceProvider.GetRequiredService<MultiPartitionCustomerService>());
 }
 
 public class IncrementCreditsHttpBody
