@@ -9,20 +9,15 @@ public class CustomerRepository
         // delete data from DB....
 
         // run deletion logic
-        var deletionLogic = new CutomerDeletionLogic(id);
+        var deletionLogic = new CutomerDeletionLogic();
+        deletionLogic.CustomerId = id;
         deletionLogic.RunLogic(_billingService, true, false);
     }
 
     private class CutomerDeletionLogic
     {
-        private readonly int _customerId;
         private readonly List<int> _discoveredRelatedIds = new();
         private IBillingService? _billing;
-
-        public CutomerDeletionLogic(int customerId)
-        {   
-            _customerId = customerId;
-        }
 
         public void RunLogic(IBillingService billing, bool deleteRelatons, bool deleteCredits)
         {
@@ -38,7 +33,11 @@ public class CustomerRepository
             {
                 DeleteCredits();
             }
+
+            billing.NotifyCustomerDeleted(CustomerId);
         }
+
+        public int CustomerId { get; set;}
 
         private void DiscoverRelatedCustomerIds()   
         {

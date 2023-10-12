@@ -26,6 +26,8 @@ public class CustomerRepository
             DeleteCredits();
         }
 
+        _billingService.NotifyCustomerDeleted(customerId);
+
         void DiscoverRelatedCustomerIds()   
         {
             //
