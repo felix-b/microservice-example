@@ -7,4 +7,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+
+  <ItemGroup>
+    <ProjectReference Include="..\AllDone.Contracts\AllDone.Contracts.csproj" />
+    <ProjectReference Include="..\AllDone.Infra\AllDone.Infra.csproj" />
+  </ItemGroup>
 </Project>
