@@ -173,7 +173,20 @@ public class CustomerServiceQueue : ICustomerService, IHostedService
                     break;
             }
         }
-    } 
+    }
 
-   рей
+    private record WorkItem(
+    TaskCompletionSource<object> Completion,
+    object Request,
+    CancellationToken RequestCancellation
+)
+    {
+        public WorkItem(object request, CancellationToken cancellation)
+            : this(
+                Completion: new TaskCompletionSource<object>(),
+                Request: request,
+                RequestCancellation: cancellation)
+        {
+        }
+    }
 }
