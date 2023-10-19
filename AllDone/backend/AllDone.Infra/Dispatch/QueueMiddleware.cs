@@ -7,9 +7,9 @@ namespace AllDone.Infra.Dispatch;
 public class QueueMiddleware : IDispatchMiddleware, IHostedService
 {
     private readonly IDispatchMiddleware _next;
-     private readonly Channel<WorkItem> _queue = Channel.CreateBounded<WorkItem>(capacity: 1000);
-    private Task _runRequestLoopTask = Task.CompletedTask;
+    private readonly Channel<WorkItem> _queue = Channel.CreateBounded<WorkItem>(capacity: 1000);
     private readonly CancellationTokenSource _hostCancellation;
+    private Task _runRequestLoopTask = Task.CompletedTask;
 
     public QueueMiddleware(IDispatchMiddleware next)
     {

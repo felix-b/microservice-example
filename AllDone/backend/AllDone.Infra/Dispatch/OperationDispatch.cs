@@ -9,7 +9,9 @@ public class OperationDispatch
         _firstMiddleware = firstMiddleware;
     }
 
-    public Task<TResponse> ExecuteOperationAsync<TRequest, TResponse>(TRequest request)
+    public Task<TResponse> ExecuteOperationAsync<TRequest, TResponse>(TRequest request) 
+        where TRequest : class
+        where TResponse : class
     {
         // call first middleware
         throw new NotImplementedException();  

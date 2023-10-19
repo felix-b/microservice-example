@@ -2,6 +2,13 @@
 
 public static class FacadeServiceContracts
 {
-    public record AddUserRequest();
-    public record AddUserResponse();
+    public record AddUserRequest(
+        string Email,
+        string FullName
+    );
+    
+    public record AddUserResponse(
+        bool Success,
+        string? ErrorCode
+    );
 }
