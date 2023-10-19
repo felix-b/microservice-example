@@ -1,6 +1,8 @@
 using Microsoft.Extensions.Hosting;
 using System.Threading;
 using System.Threading.Channels;
+using Microsoft.Extensions.DependencyInjection;
+
 
 namespace AllDone.Infra.Dispatch;
 
@@ -67,5 +69,17 @@ public class QueueMiddleware : IDispatchMiddleware, IHostedService
                 RequestCancellation: cancellation)
         {
         }
+    }
+}
+
+public static class QueueMiddlewareBuilderExtensions
+{
+    public static void AddQueue(this IOperationDispatchBuild build)
+    {
+        var nextMiddlewareType = build.FirstMiddlewareType;
+        build.Services.AddSingleton<QueueMiddleware>(serviceProvider => new QueueMiddleware(
+            next: (IDispatchMiddleware)serviceProvider.GetRequiredService(nextMiddlewareType)
+    )   );
+        build.AddMiddleware<QueueMiddleware>();// I don't like it. Easy to forget
     }
 }

@@ -47,16 +47,30 @@ void MapAllRoutes()
 
 void RegisterAllServices()
 {
-    
+
     //TODO
 
-    /*
-    var serviceInstance = new FacadeService();
-    var invoker = new InvokeServiceMethodMiddleware(
-        map => {
-            map.MapMethod<AddUserRequest, AddUserResponse>(serviceInstance.AddUser); // here a dictionary entry is added
-        }
-    );
+    builder.Services.AddOperationDispatch(build => {
+        build.AddQueue();
+        //build.AddLogging();
+
+    });
+
+    builder.Services.AddSingleton<FacadeService>();
+    builder.Services.AddSingleton<InvokeServiceMethodMiddleware>(serviceProvider =>
+    {
+        var serviceInstance = serviceProvider.GetRequiredService<FacadeService>();
+        return new InvokeServiceMethodMiddleware(map =>
+        {
+            map.MapMethod<AddUserRequest, AddUserResponse>(serviceInstance.AddUser);
+        });
+    });
+    builder.Services.AddSingleton<QueueMiddleware>(serviceProvider => new QueueMiddleware(
+        next: serviceProvider.GetRequiredService<InvokeServiceMethodMiddleware>()
+    ));
+    builder.Services.AddSingleton<OperationDispatch>(serviceProvider => new OperationDispatch(
+        firstMiddleware: serviceProvider.GetRequiredService<QueueMiddleware>()
+    ));
 
 
     builder.Services.AddLogging(logging =>
@@ -71,15 +85,7 @@ void RegisterAllServices()
     builder.Services.AddSwaggerGen();
 
 
-    builder.Services.AddTransient<Example.CustomerCreditService.BusinessLogic.CustomerService>();
-    builder.Services.AddTransient<CustomerServiceQueue>(serviceProvider => {
-        Console.WriteLine("*** creating instance of CustomerServiceQueue ***");
-        return new CustomerServiceQueue(
-            innerService: serviceProvider.GetRequiredService<Example.CustomerCreditService.BusinessLogic.CustomerService>(),
-            logger: serviceProvider.GetRequiredService<ILogger<CustomerServiceQueue>>()
-        );
-    });
-    
+    /*
     builder.Services.AddSingleton<MultiPartitionCustomerService>(serviceProvider =>
        new MultiPartitionCustomerService(
            numberOfQueues: Environment.ProcessorCount,
@@ -88,9 +94,9 @@ void RegisterAllServices()
        )
    );
     builder.Services.AddSingleton<ICustomerService>(serviceProvider => serviceProvider.GetRequiredService<MultiPartitionCustomerService>());
-    builder.Services.AddHostedService(serviceProvider => serviceProvider.GetRequiredService<MultiPartitionCustomerService>());
-
     */
+
+    builder.Services.AddHostedService(serviceProvider => serviceProvider.GetRequiredService<QueueMiddleware>());
 }
 
 public class UserAddHttpBody
