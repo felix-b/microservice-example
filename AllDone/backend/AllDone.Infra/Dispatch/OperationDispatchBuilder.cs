@@ -36,18 +36,5 @@ namespace AllDone.Infra.Dispatch
         Type FirstMiddlewareType { get; }
         IServiceCollection Services { get; }
     }
-    public static class ServiceCollectionExtensions
-    {
-        public static void AddOperationDispatch(
-            this IServiceCollection services, 
-            Action<IOperationDispatchBuild> build)
-        {
-            var builder = new OperationDispatchBuilder(services);
-            build(builder);
-
-            services.AddSingleton<OperationDispatch>(serviceProvider => new OperationDispatch(
-                firstMiddleware: (IDispatchMiddleware)serviceProvider.GetRequiredService(builder.FirstMiddlewareType)
-            ));
-        }
-    }
+    
 }

@@ -72,14 +72,3 @@ public class QueueMiddleware : IDispatchMiddleware, IHostedService
     }
 }
 
-public static class QueueMiddlewareBuilderExtensions
-{
-    public static void AddQueue(this IOperationDispatchBuild build)
-    {
-        var nextMiddlewareType = build.FirstMiddlewareType;
-        build.Services.AddSingleton<QueueMiddleware>(serviceProvider => new QueueMiddleware(
-            next: (IDispatchMiddleware)serviceProvider.GetRequiredService(nextMiddlewareType)
-    )   );
-        build.AddMiddleware<QueueMiddleware>();// I don't like it. Easy to forget
-    }
-}

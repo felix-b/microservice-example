@@ -50,28 +50,22 @@ void RegisterAllServices()
 
     //TODO
 
-    builder.Services.AddOperationDispatch(build => {
-        build.AddQueue();
-        //build.AddLogging();
+    builder.Services.AddOperationDispatch<FacadeService>(
+        mapMethods: (service, map) =>
+        {
+            map.MapMethod<AddUserRequest, AddUserResponse>(service.AddUser);
+        },
+        build => {
+            build.AddQueue();
+            build.AddMultiPartition(
+                Environment.ProcessorCount, PartitionKey.Get);
+           
+            //build.AddLogging();
 
-    });
+        }
+    );
 
     builder.Services.AddSingleton<FacadeService>();
-    builder.Services.AddSingleton<InvokeServiceMethodMiddleware>(serviceProvider =>
-    {
-        var serviceInstance = serviceProvider.GetRequiredService<FacadeService>();
-        return new InvokeServiceMethodMiddleware(map =>
-        {
-            map.MapMethod<AddUserRequest, AddUserResponse>(serviceInstance.AddUser);
-        });
-    });
-    builder.Services.AddSingleton<QueueMiddleware>(serviceProvider => new QueueMiddleware(
-        next: serviceProvider.GetRequiredService<InvokeServiceMethodMiddleware>()
-    ));
-    builder.Services.AddSingleton<OperationDispatch>(serviceProvider => new OperationDispatch(
-        firstMiddleware: serviceProvider.GetRequiredService<QueueMiddleware>()
-    ));
-
 
     builder.Services.AddLogging(logging =>
         logging.AddSimpleConsole(options => {
