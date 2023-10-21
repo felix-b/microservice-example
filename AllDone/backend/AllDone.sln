@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AllDone.Contracts", "AllDon
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AllDone.Sidecars.KafkaHttp", "AllDone.Sidecars.KafkaHttp\AllDone.Sidecars.KafkaHttp.csproj", "{A99F7B07-5AF8-4F7B-B8A6-E5D5597EB63B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AllDone.Infra.Tests", "AllDone.Infra.Tests\AllDone.Infra.Tests.csproj", "{138B7E2A-FB47-4E62-9A86-5BA4747FA009}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,5 +56,9 @@ Global
 		{A99F7B07-5AF8-4F7B-B8A6-E5D5597EB63B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A99F7B07-5AF8-4F7B-B8A6-E5D5597EB63B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A99F7B07-5AF8-4F7B-B8A6-E5D5597EB63B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{138B7E2A-FB47-4E62-9A86-5BA4747FA009}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{138B7E2A-FB47-4E62-9A86-5BA4747FA009}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{138B7E2A-FB47-4E62-9A86-5BA4747FA009}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{138B7E2A-FB47-4E62-9A86-5BA4747FA009}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

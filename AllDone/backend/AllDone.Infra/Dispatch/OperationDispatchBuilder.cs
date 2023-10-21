@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AllDone.Infra.Dispatch
 {
-    internal class OperationDispatchBuilder : IOperationDispatchBuild
+    public class OperationDispatchBuilder : IOperationDispatchBuild
     {
         public OperationDispatchBuilder(IServiceCollection services)
         {

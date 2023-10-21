@@ -33,8 +33,8 @@ namespace AllDone.Infra.Dispatch
             var nextMiddlewareType = build.FirstMiddlewareType;
             build.Services.AddSingleton<QueueMiddleware>(serviceProvider => new QueueMiddleware(
                 next: (IDispatchMiddleware)serviceProvider.GetRequiredService(nextMiddlewareType)
-        ));
-            build.AddMiddleware<QueueMiddleware>();// I don't like it. Easy to forget
+            ));
+            build.AddMiddleware<QueueMiddleware>();//TODO: I don't like it. Easy to forget
         }
     }
 
@@ -49,7 +49,7 @@ namespace AllDone.Infra.Dispatch
                 var serviceInstance = serviceProvider.GetRequiredService<TService>();
                 return new InvokeServiceMethodMiddleware(map => mapMethods(serviceInstance, map));
             });
-            build.AddMiddleware<QueueMiddleware>();// I don't like it. Easy to forget
+            build.AddMiddleware<InvokeServiceMethodMiddleware>();
         }
     }
 
@@ -66,6 +66,7 @@ namespace AllDone.Infra.Dispatch
                     getPartitionKey
                 );
             });
+            build.AddMiddleware<MultiPartitionMiddleware>();
         }
     }
 
