@@ -37,19 +37,26 @@ public class QueueMiddleware : IDispatchMiddleware, IHostedService
         return Task.CompletedTask;
     }
 
-    Task IHostedService.StopAsync(CancellationToken cancellationToken)
+    async Task IHostedService.StopAsync(CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        _hostCancellation.Cancel();
+        await _runRequestLoopTask;
     }
 
 
     private async Task RunRequestLoop()
     {
         await Task.Yield();
+
         try
         {
             await foreach (var workItem in _queue.Reader.ReadAllAsync(_hostCancellation.Token))
-            {
+            {  
+                if (workItem.RequestCancellation.IsCancellationRequested) {
+                    {
+                        continue;
+                    }
+                 }
                 var response =await _next.ExecuteOperationAsync(workItem.Request);
                 workItem.Completion.SetResult(response);
             }
